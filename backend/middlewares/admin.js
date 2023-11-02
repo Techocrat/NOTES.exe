@@ -49,10 +49,25 @@ export const listAllUsers = async (req, res) => {
         .json({ message: "You are not authorized view all users." });
     }
 
-    // Fetch all users
-    const users = await User.find({});
+    const page = parseInt(req.query.page) || 1; // Current page
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of users per page
 
-    return res.status(200).json(users);
+    // Calculate the starting index for users on the current page
+    const startIndex = (page - 1) * pageSize;
+
+    // Fetch users with pagination
+    const users = await User.find({})
+      .skip(startIndex) // Skip users on previous pages
+      .limit(pageSize); // Limit the number of users on the current page
+
+    // Count the total number of users in the database
+    const totalUsers = await User.countDocuments();
+
+    return res.status(200).json({
+      users,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / pageSize),
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -79,10 +94,25 @@ export const viewUserNotes = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Fetch the user's notes
-    const userNotes = await Note.find({ user: userId });
+    const page = parseInt(req.query.page) || 1; // Current page
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of notes per page
 
-    return res.status(200).json(userNotes);
+    // Calculate the starting index for notes on the current page
+    const startIndex = (page - 1) * pageSize;
+
+    // Fetch the user's notes with pagination
+    const userNotes = await Note.find({ user: userId })
+      .skip(startIndex) // Skip notes on previous pages
+      .limit(pageSize); // Limit the number of notes on the current page
+
+    // Count the total number of notes for the user
+    const totalUserNotes = await Note.countDocuments({ user: userId });
+
+    return res.status(200).json({
+      userNotes,
+      currentPage: page,
+      totalPages: Math.ceil(totalUserNotes / pageSize),
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });

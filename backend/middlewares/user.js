@@ -7,13 +7,28 @@ export const getMyNotes = async (req, res) => {
       return res.status(401).json({ message: "Authentication required." });
     }
 
+    const page = parseInt(req.query.page) || 1; // Current page
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of notes per page
+
+    // Calculate the starting index for notes on the current page
+    const startIndex = (page - 1) * pageSize;
+
     // Get the user ID from the authenticated user
     const userId = req.user.id;
 
-    // Fetch all notes for the authenticated user
-    const userNotes = await Note.find({ user: userId });
+    // Fetch the user's notes with pagination
+    const userNotes = await Note.find({ user: userId })
+      .skip(startIndex) // Skip notes on previous pages
+      .limit(pageSize); // Limit the number of notes on the current page
 
-    return res.status(200).json(userNotes);
+    // Count the total number of notes for the user
+    const totalUserNotes = await Note.countDocuments({ user: userId });
+
+    return res.status(200).json({
+      userNotes,
+      currentPage: page,
+      totalPages: Math.ceil(totalUserNotes / pageSize),
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
