@@ -1,25 +1,29 @@
-const express = require("express");
+import express from 'express';
 const router = express.Router();
-const InviteToken = require("../models/InviteToken");
-const User = require("../models/User");
+import User from '../models/User.js';
+import generateUniqueToken from "../utils/generateUniqueToken.js";
+import { verifyToken } from '../middlewares/auth.js';
+import InviteToken from '../models/Token.js';
 
-const generateUniqueToken = require("../utils/generateUniqueToken");
-
-// Create an invitation token by an admin
-router.post("/create-invitation-link", async (req, res) => {
+// Create an invitation token by an admin 
+router.get("/", async (req, res) => {
+    res.send("Admin route");
+});
+router.get("/create-invitation-link", verifyToken,async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    const { adminId } = req.body; // Assuming you have admin's user ID in the request body
-    const admin = await User.findById(adminId);
-
-    if (!admin || !admin.isAdmin) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to create invitations." });
+    console.log(req.user);
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if(!fetch_user.isAdmin)
+    {
+      return res.status(403).json({ message: "You are not authorized to create invitations." });
     }
 
+
+  
     // Generate a unique invite token
-    const token = generateUniqueToken(); // You need to implement this function
+    const token = await generateUniqueToken(); // You need to implement this function
+    console.log(token);
 
     // Set the token's expiration date (e.g., one week from now)
     const expiryDate = new Date();
@@ -27,7 +31,7 @@ router.post("/create-invitation-link", async (req, res) => {
 
     // Create the invitation token in the database
     const inviteToken = new InviteToken({
-      admin: adminId,
+      admin: fetch_user,
       token: token,
       expiryDate: expiryDate,
     });
@@ -44,7 +48,7 @@ router.post("/create-invitation-link", async (req, res) => {
 });
 
 // Update user role to admin (accessible to admins only)
-router.put("/promote-to-admin/:userId", async (req, res) => {
+router.put("/promote-to-admin/:userId",verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
     if (!req.user.isAdmin) {
@@ -79,7 +83,7 @@ router.put("/promote-to-admin/:userId", async (req, res) => {
 });
 
 // List all users (accessible to admins only)
-router.get("/users", async (req, res) => {
+router.get("/users", verifyToken,async (req, res) => {
   try {
     // Check if the user making the request is an admin
     if (!req.user.isAdmin) {
@@ -99,7 +103,7 @@ router.get("/users", async (req, res) => {
 });
 
 // View user's notes (accessible to admins only)
-router.get("/users/:userId/notes", async (req, res) => {
+router.get("/users/:userId/notes", verifyToken,async (req, res) => {
   try {
     // Check if the user making the request is an admin
     if (!req.user.isAdmin) {
@@ -129,7 +133,7 @@ router.get("/users/:userId/notes", async (req, res) => {
 });
 
 // Edit Note (accessible to admins only)
-router.get("/edit-note/:noteId", async (req, res) => {
+router.get("/edit-note/:noteId", verifyToken,async (req, res) => {
   try {
     // Check if the user making the request is an admin
     if (!req.user.isAdmin) {
@@ -194,7 +198,7 @@ router.put("/update-note/:noteId", async (req, res) => {
 });
 
 // Delete Note (accessible to admins only)
-router.delete("/delete-note/:noteId", async (req, res) => {
+router.delete("/delete-note/:noteId", verifyToken,async (req, res) => {
   try {
     // Check if the user making the request is an admin
     if (!req.user.isAdmin) {
@@ -223,4 +227,4 @@ router.delete("/delete-note/:noteId", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

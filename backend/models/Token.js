@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const inviteTokenSchema = new mongoose.Schema({
+const TokenSchema = new mongoose.Schema({
   admin: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -26,6 +26,6 @@ const inviteTokenSchema = new mongoose.Schema({
   },
 });
 
-const InviteToken = mongoose.model("InviteToken", inviteTokenSchema);
+const InviteToken = mongoose.model("InviteToken", TokenSchema);
 
-module.exports = InviteToken;
+export default InviteToken;

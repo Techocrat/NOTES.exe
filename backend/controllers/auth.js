@@ -7,7 +7,7 @@ import InviteToken from "../models/Token.js";
 export const register = async (req, res) => {
   try {
     const { username, email, password, token } = req.body;
-    let fetch_token = InviteToken.findOne({ token: token });
+    let fetch_token = await InviteToken.findOne({ token: token });
     if (!fetch_token) {
       return res.status(403).send("Access Denied");
     }
