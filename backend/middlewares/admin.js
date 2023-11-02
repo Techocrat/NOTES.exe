@@ -1,6 +1,7 @@
 import Note from "../models/Notes.js";
 import InviteToken from "../models/Token.js";
 import User from "../models/User.js";
+import generateInvitationToken from "../utils/generateInvitationToken.js";
 
 export const createInvitationLink = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ export const createInvitationLink = async (req, res) => {
     }
 
     // Generate a unique invite token
-    const token = await generateUniqueToken(); // You need to implement this function
+    const token = await generateInvitationToken(); // You need to implement this function
     console.log(token);
 
     // Set the token's expiration date (e.g., one week from now)

@@ -3,7 +3,7 @@ import InviteToken from "../models/Token.js"
 
 
 // Function to generate a unique token
-const generateUniqueToken = async () => {
+const generateInvitationToken = async () => {
   // Generate a unique UUID (version 4)
   const token = uuidv4();
   // check if the token already exists in the database
@@ -17,4 +17,4 @@ const generateUniqueToken = async () => {
   return token;
 };
 
-export default generateUniqueToken;
+export default generateInvitationToken;
