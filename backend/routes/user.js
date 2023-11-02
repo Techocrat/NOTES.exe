@@ -1,9 +1,10 @@
-import express from 'express';
+import express from "express";
+import { verifyToken } from "../middlewares/auth.js";
+import Note from "../models/Notes.js";
 const router = express.Router();
 
-
 // Get all notes of the currently authenticated user
-router.get("/my-notes", async (req, res) => {
+router.get("/my-notes", verifyToken, async (req, res) => {
   try {
     // Check if the user is authenticated
     if (!req.user) {
@@ -11,7 +12,7 @@ router.get("/my-notes", async (req, res) => {
     }
 
     // Get the user ID from the authenticated user
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     // Fetch all notes for the authenticated user
     const userNotes = await Note.find({ user: userId });
@@ -24,7 +25,7 @@ router.get("/my-notes", async (req, res) => {
 });
 
 // Get one specific note by ID
-router.get("/notes/:noteId", async (req, res) => {
+router.get("/notes/:noteId", verifyToken, async (req, res) => {
   try {
     const { noteId } = req.params;
 
@@ -50,7 +51,7 @@ router.get("/notes/:noteId", async (req, res) => {
 });
 
 // Update one specific note by ID
-router.put("/notes/:noteId", async (req, res) => {
+router.put("/notes/:noteId", verifyToken, async (req, res) => {
   try {
     const { noteId } = req.params;
 
@@ -87,7 +88,7 @@ router.put("/notes/:noteId", async (req, res) => {
 });
 
 // Delete one specific note by ID
-router.delete("/notes/:noteId", async (req, res) => {
+router.delete("/notes/:noteId", verifyToken, async (req, res) => {
   try {
     const { noteId } = req.params;
 
@@ -117,11 +118,11 @@ router.delete("/notes/:noteId", async (req, res) => {
 
 // Function to check if the note belongs to the authenticated user
 function isNoteBelongsToCurrentUser(user, note) {
-  return user && note.user.equals(user._id);
+  return user && note.user.equals(user.id);
 }
 
 // Create a new note
-router.post("/create-note", async (req, res) => {
+router.post("/create-note", verifyToken, async (req, res) => {
   try {
     // Check if the user is authenticated
     if (!req.user) {
@@ -133,7 +134,7 @@ router.post("/create-note", async (req, res) => {
 
     // Create a new note
     const newNote = new Note({
-      user: req.user._id, // Associate the note with the authenticated user
+      user: req.user.id, // Associate the note with the authenticated user
       title,
       content,
       isPublic: false, // You can set this value as needed
@@ -152,7 +153,7 @@ router.post("/create-note", async (req, res) => {
 });
 
 // View the top 10 recently posted public notes
-router.get("/top-public-notes", async (req, res) => {
+router.get("/top-public-notes", verifyToken, async (req, res) => {
   try {
     // Query the database to find the top 10 public notes sorted by the most recent
     const publicNotes = await Note.find({ isPublic: true })

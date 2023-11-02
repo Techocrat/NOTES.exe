@@ -13,10 +13,10 @@ export const register = async (req, res) => {
     }
     let { expiryDate, status } = fetch_token;
     if (status !== "pending") {
-      return res.status(403).send("Access Denied");
+      return res.status(403).send("Invite token already used!");
     }
     if (expiryDate < Date.now()) {
-      return res.status(403).send("Access Denied");
+      return res.status(403).send("Invite token expired!");
     }
 
     const salt = await bcrypt.genSalt();
@@ -30,6 +30,8 @@ export const register = async (req, res) => {
     console.log(newUser);
     const savedUser = await newUser.save();
     console.log(savedUser);
+    fetch_token.status = "used";
+    await fetch_token.save();
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });

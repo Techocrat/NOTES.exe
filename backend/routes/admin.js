@@ -1,26 +1,23 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import User from '../models/User.js';
+import User from "../models/User.js";
 import generateUniqueToken from "../utils/generateUniqueToken.js";
-import { verifyToken } from '../middlewares/auth.js';
-import InviteToken from '../models/Token.js';
+import { verifyToken } from "../middlewares/auth.js";
+import InviteToken from "../models/Token.js";
+import Note from "../models/Notes.js";
 
-// Create an invitation token by an admin 
-router.get("/", async (req, res) => {
-    res.send("Admin route");
-});
-router.get("/create-invitation-link", verifyToken,async (req, res) => {
+// Create an invitation token by an admin
+router.get("/create-invitation-link", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
     console.log(req.user);
     let fetch_user = await User.findOne({ _id: req.user.id });
-    if(!fetch_user.isAdmin)
-    {
-      return res.status(403).json({ message: "You are not authorized to create invitations." });
+    if (!fetch_user.isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to create invitations." });
     }
 
-
-  
     // Generate a unique invite token
     const token = await generateUniqueToken(); // You need to implement this function
     console.log(token);
@@ -48,13 +45,14 @@ router.get("/create-invitation-link", verifyToken,async (req, res) => {
 });
 
 // Update user role to admin (accessible to admins only)
-router.put("/promote-to-admin/:userId",verifyToken, async (req, res) => {
+router.put("/promote-to-admin/:userId", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to perform this action." });
+        .json({ message: "You are not authorized to promote users!" });
     }
 
     // Get the user ID from the route parameter
@@ -83,17 +81,18 @@ router.put("/promote-to-admin/:userId",verifyToken, async (req, res) => {
 });
 
 // List all users (accessible to admins only)
-router.get("/users", verifyToken,async (req, res) => {
+router.get("/users", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to view users." });
+        .json({ message: "You are not authorized to create invitations." });
     }
 
     // Fetch all users
-    const users = await User.find({}, "_id username isAdmin");
+    const users = await User.find({});
 
     return res.status(200).json(users);
   } catch (error) {
@@ -103,13 +102,14 @@ router.get("/users", verifyToken,async (req, res) => {
 });
 
 // View user's notes (accessible to admins only)
-router.get("/users/:userId/notes", verifyToken,async (req, res) => {
+router.get("/users/:userId/notes", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to view notes." });
+        .json({ message: "You are not authorized to create invitations." });
     }
 
     // Get the user ID from the route parameter
@@ -133,13 +133,14 @@ router.get("/users/:userId/notes", verifyToken,async (req, res) => {
 });
 
 // Edit Note (accessible to admins only)
-router.get("/edit-note/:noteId", verifyToken,async (req, res) => {
+router.get("/edit-note/:noteId", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to edit notes." });
+        .json({ message: "You are not authorized to create invitations." });
     }
 
     // Get the note ID from the route parameter
@@ -160,13 +161,14 @@ router.get("/edit-note/:noteId", verifyToken,async (req, res) => {
 });
 
 // Update Note (accessible to admins only)
-router.put("/update-note/:noteId", async (req, res) => {
+router.put("/update-note/:noteId", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to update notes." });
+        .json({ message: "You are not authorized to create invitations." });
     }
 
     // Get the note ID from the route parameter
@@ -198,13 +200,14 @@ router.put("/update-note/:noteId", async (req, res) => {
 });
 
 // Delete Note (accessible to admins only)
-router.delete("/delete-note/:noteId", verifyToken,async (req, res) => {
+router.delete("/delete-note/:noteId", verifyToken, async (req, res) => {
   try {
     // Check if the user making the request is an admin
-    if (!req.user.isAdmin) {
+    let fetch_user = await User.findOne({ _id: req.user.id });
+    if (!fetch_user.isAdmin) {
       return res
         .status(403)
-        .json({ message: "You are not authorized to delete notes." });
+        .json({ message: "You are not authorized to create invitations." });
     }
 
     // Get the note ID from the route parameter
