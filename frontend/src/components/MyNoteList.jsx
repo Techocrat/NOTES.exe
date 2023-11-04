@@ -5,7 +5,7 @@ const MyNoteList = ({ notes, setNotes }) => {
   const [editingNote, setEditingNote] = useState(null);
   const [editedNote, setEditedNote] = useState({ title: "", content: "" });
   const { token } = useContext(AuthContext);
-  
+
   const handleDelete = async (noteId) => {
     try {
       const res = await fetch(
@@ -95,31 +95,37 @@ const MyNoteList = ({ notes, setNotes }) => {
         {notes.map((note) => (
           <div
             key={note._id}
-            className="bg-yellow-100 rounded-lg shadow-md p-4 flex flex-col h-full"
+            className="bg-yellow-100 rounded-lg shadow-md p-4 flex flex-col w-full border-2 border-gray-100 p-4 mt-1 h-50"
+            rows={10}
           >
             <div>
               {editingNote === note._id ? (
-                <input
-                  type="text"
-                  placeholder="Edit title"
-                  value={editedNote.title}
-                  onChange={(e) =>
-                    setEditedNote({ ...editedNote, title: e.target.value })
-                  }
-                />
+                <>
+                  <input
+                    type="text"
+                    placeholder="Edit title"
+                    value={editedNote.title}
+                    onChange={(e) =>
+                      setEditedNote({ ...editedNote, title: e.target.value })
+                    }
+                    className="w-full border-2 border-gray-100 p-4 mt-1 bg-transparent font-bold"
+                  />
+                  <textarea
+                    rows={10}
+                    maxLength="200"
+                    placeholder="Edit content"
+                    value={editedNote.content}
+                    onChange={(e) =>
+                      setEditedNote({ ...editedNote, content: e.target.value })
+                    }
+                    className="w-full border-2 border-gray-100 p-4 mt-1 h-50"
+                  />
+                </>
               ) : (
-                <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
-              )}
-              {editingNote === note._id ? (
-                <textarea
-                  placeholder="Edit content"
-                  value={editedNote.content}
-                  onChange={(e) =>
-                    setEditedNote({ ...editedNote, content: e.target.value })
-                  }
-                />
-              ) : (
-                <p className="text-gray-600 mb-2">{note.content}</p>
+                <>
+                  <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
+                  <p className="text-gray-600 mb-2">{note.content}</p>
+                </>
               )}
             </div>
             <div className="flex-grow"></div>
