@@ -26,10 +26,10 @@ router.get("/top-public-notes", verifyToken, getTopPublicNotes);
 
 // PUT ROUTES
 // Update a note by ID
-router.put("/notes/:noteId", verifyToken, updateNoteById);
+router.put("/update-notes/:noteId", verifyToken, updateNoteById);
 
 // DELETE ROUTES
 // Delete a note by ID
-router.delete("/notes/:noteId", verifyToken, deleteNoteById);
+router.delete("/delete-notes/:noteId", verifyToken, deleteNoteById);
 
 export default router;

@@ -24,11 +24,9 @@ export const getMyNotes = async (req, res) => {
     // Count the total number of notes for the user
     const totalUserNotes = await Note.countDocuments({ user: userId });
 
-    return res.status(200).json({
-      userNotes,
-      currentPage: page,
-      totalPages: Math.ceil(totalUserNotes / pageSize),
-    });
+    return res.status(200).json(
+      userNotes
+    );
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -68,14 +66,14 @@ export const createNote = async (req, res) => {
     }
 
     // Extract note data from the request body
-    const { title, content } = req.body;
+    const { title, content, isPublic } = req.body;
 
     // Create a new note
     const newNote = new Note({
       user: req.user.id, // Associate the note with the authenticated user
       title,
       content,
-      isPublic: false, // You can set this value as needed
+      isPublic, // You can set this value as needed
     });
 
     // Save the new note to the database
