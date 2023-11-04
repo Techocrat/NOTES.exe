@@ -6,11 +6,14 @@ export const AuthContext = createContext();
 const AuthContextProvider = (props) => {
   const navigate = useNavigate();
 
+  const [url, setUrl] = useState("");
+  const [homeError, setHomeError] = useState("");
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
+  const [inviteToken, setInviteToken] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -58,10 +61,58 @@ const AuthContextProvider = (props) => {
     }
   };
 
+  const handleGo = async () => {
+    const startIndex = url.indexOf("invitetoken=");
+    console.log(startIndex);
+
+    if (startIndex !== -1) {
+      const endIndex = url.indexOf("&", startIndex);
+      const invite = url.slice(
+        startIndex + "invitetoken=".length,
+        endIndex !== -1 ? endIndex : undefined
+      );
+
+      console.log(invite); // Output: "abc123"
+      try {
+        const response = await fetch("http://localhost:6001/auth/checkToken", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            invite: invite,
+          }),
+        });
+        if (response.status === 200) {
+          
+          let data = await response.json();
+          console.log(data);
+          setInviteToken(invite);
+          navigate("/Register"); // Update with your actual route
+        } else {
+          let data = await response.json();
+          let { message } = data;
+          setHomeError(message);
+          setInviteToken("");
+          setUrl("");
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+        setHomeError("An error occurred. Please try again later.");
+        setInviteToken("");
+        setUrl("");
+        navigate("/");
+      }
+    } else {
+      console.log("Invalid token!");
+    }
+  };
+
   const handleLogout = () => {
     setUser(null);
     setToken(null);
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -77,6 +128,13 @@ const AuthContextProvider = (props) => {
         handleLogin: handleLogin,
         handleLogout: handleLogout,
         token: token,
+        homeError: homeError,
+        url: url,
+        setUrl: setUrl,
+        handleGo: handleGo,
+        inviteToken: inviteToken,
+        setInviteToken: setInviteToken,
+
       }}
     >
       {props.children}

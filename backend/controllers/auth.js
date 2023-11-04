@@ -7,6 +7,7 @@ import InviteToken from "../models/Token.js";
 export const register = async (req, res) => {
   try {
     const { username, email, password, token } = req.body;
+    console.log(req.body);
     let fetch_token = await InviteToken.findOne({ token: token });
     if (!fetch_token) {
       return res.status(403).send("Access Denied");
@@ -56,6 +57,28 @@ export const login = async (req, res) => {
     delete user.password;
     res.status(200).json({ token, user });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const checkToken = async (req, res) => {
+  try {
+      const { invite } = req.body;
+      let fetch_token = await InviteToken.findOne({ token: invite });
+      if (!fetch_token) {
+        return res.status(404).json({message:"Invite token not found!"})
+      }
+      let { expiryDate, status } = fetch_token;
+      if (status !== "pending") {
+        return res.status(400).send("Invite token already used!");
+      }
+      if (expiryDate < Date.now()) {
+        return res.status(400).send("Invite token expired!");
+      }
+
+      return res.status(200).json({message:"Invite token valid!"});
+
+  }catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
