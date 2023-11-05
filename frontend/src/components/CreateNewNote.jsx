@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import Header from "./Header";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const CreateNewNote = () => {
   let { token } = useContext(AuthContext);
@@ -10,7 +11,7 @@ const CreateNewNote = () => {
   const handleSaveNote = async () => {
     if (!title || !body) {
       // Ensure that both title and body are provided
-      alert("Please fill in both title and note body.");
+      toast.error("Please fill in both title and note body.");
       return;
     }
 
@@ -31,14 +32,16 @@ const CreateNewNote = () => {
 
       if (response.status === 201) {
         // Note saved successfully
-        alert("Note saved successfully!");
+        setTitle("");
+        setBody("");
+        toast.success("Note saved successfully!");
       } else {
         // Handle errors here, e.g., display an error message
-        alert("Failed to save the note. Please try again.");
+        toast.error("Failed to save the note. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      alert("An error occurred while saving the note. Please try again.");
+      toast.error("An error occurred while saving the note. Please try again.");
     }
   };
 

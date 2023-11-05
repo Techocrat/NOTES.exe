@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const NoteList = ({ notes }) => {
@@ -17,9 +16,7 @@ const NoteList = ({ notes }) => {
               <p className="text-gray-600 mb-2">{note.content}</p>
             </div>
             <div className="flex-grow"></div>{" "}
-            <div className="text-yellow-700">
-              Owner: {note.ownerName} | Created At: {note.createdAt}
-            </div>
+            <div className="text-yellow-700">Created At: {note.createdAt}</div>
           </div>
         ))}
       </div>

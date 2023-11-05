@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Header from "./Header";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const Register = () => {
   let navigate = useNavigate();
   let { inviteToken, setInviteToken } = useContext(AuthContext);
@@ -33,7 +34,7 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        alert("Registration successful!");
+        toast.success("Registration successful!");
         setInviteToken("");
         setFormData({
           username: "",
@@ -45,11 +46,11 @@ const Register = () => {
         navigate("/login");
       } else {
         const data = await response.json();
-        alert(data.error || "Registration failed. Please try again.");
+        toast.error(data.error || "Registration failed. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      alert("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again.");
     }
   };
 

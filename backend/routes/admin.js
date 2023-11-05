@@ -16,8 +16,9 @@ import {
 // GET ROUTES
 // Create an invitation token by an admin
 router.get("/create-invitation-link", verifyToken, createInvitationLink);
+
 // get all users
-router.get("/users", verifyToken, listAllUsers);
+router.get("/users", verifyToken, listAllUsers );
 // get all notes of a user
 router.get("/users/:userId/notes", verifyToken, viewUserNotes);
 // edit a note

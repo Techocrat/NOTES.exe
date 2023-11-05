@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
-
 const Header = () => {
   const { user, handleLogout } = useContext(AuthContext);
   return (
@@ -16,43 +15,89 @@ const Header = () => {
               className="w-10 h-10 ml-4 mr-4"
             />
           </h4>
-          <h1 className="text-2xl font-semibold">Notes.exe</h1>
+          <Link to="/UserView">
+            <h1 className="text-2xl font-semibold">Notes.exe</h1>
+          </Link>
         </div>
 
         {user ? (
-          <>
-            <div className="flex items-center pr-10 justify-between">
-  <div className="flex flex-row items-center justify-center space-x-4">
-    <Link to="/MyNotes">
-      <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-pink-500 text-white font-bold border-b-4 border-pink-700 hover:border-pink-700 rounded">
-        My Notes
-      </button>
-    </Link>
+          user.isAdmin ? (
+            <>
+              <div className="flex items-center pr-10 justify-between">
+                <div className="flex flex-row items-center justify-center space-x-4">
+                  <Link to="/CreateInvite">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-pink-500 text-white font-bold border-b-4 border-pink-700 hover:border-pink-700 rounded">
+                      Create invite
+                    </button>
+                  </Link>
 
-    <Link to="/CreateNewNote">
-      <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-blue-500 text-white font-bold border-b-4 border-blue-700 hover:border-blue-700 rounded">
-        New Note
-      </button>
-    </Link>
+                  <Link to="/CreateNewNote">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-blue-500 text-white font-bold border-b-4 border-blue-700 hover:border-blue-700 rounded">
+                      New Note
+                    </button>
+                  </Link>
 
-    <Link to="/view-public-notes">
-      <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-violet-500 text-white font-bold border-b-4 border-violet-700 hover:border-violet-700 rounded">
-        Public Notes
-      </button>
-    </Link>
+                  <Link to="/UserView">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-purple-500 text-white font-bold border-b-4 border-purple-700 hover:border-purple-700 rounded">
+                      My Notes
+                    </button>
+                  </Link>
 
-    <button
-      onClick={handleLogout}
-      className="flex-1 w-32 h-12 bg-green-500 hover:bg-red-500 text-white font-bold border-b-4 border-red-700 hover:border-red-700 rounded"
-    >
-      Logout
-    </button>
-  </div>
-</div>
+                  <Link to="/ViewAllUsers">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-yellow-500 text-white font-bold border-b-4 border-yellow-700 hover:border-yellow-700 rounded">
+                      View all users
+                    </button>
+                  </Link>
 
-          </>
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 w-32 h-12 bg-green-500 hover:bg-red-500 text-white font-bold border-b-4 border-red-700 hover:border-red-700 rounded"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center pr-10 justify-between">
+                <div className="flex flex-row items-center justify-center space-x-4">
+                  <Link to="/MyNotes">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-pink-500 text-white font-bold border-b-4 border-pink-700 hover:border-pink-700 rounded">
+                      My Notes
+                    </button>
+                  </Link>
+
+                  <Link to="/CreateNewNote">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-blue-500 text-white font-bold border-b-4 border-blue-700 hover:border-blue-700 rounded">
+                      New Note
+                    </button>
+                  </Link>
+
+                  <Link to="/view-public-notes">
+                    <button className="flex-1 w-32 h-12 bg-green-500 hover:bg-violet-500 text-white font-bold border-b-4 border-violet-700 hover:border-violet-700 rounded">
+                      Public Notes
+                    </button>
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 w-32 h-12 bg-green-500 hover:bg-red-500 text-white font-bold border-b-4 border-red-700 hover:border-red-700 rounded"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </>
+          )
         ) : (
-          <></>
+          <>
+            <Link to={"/Login"}>
+              <button className=" w-32 h-12 bg-green-500 hover:bg-red-500 text-white font-bold border-b-4 border-red-700 hover:border-red-700 rounded">
+                Sign in
+              </button>
+            </Link>
+          </>
         )}
       </div>
     </nav>

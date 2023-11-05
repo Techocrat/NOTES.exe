@@ -88,6 +88,7 @@ const AuthContextProvider = (props) => {
           let data = await response.json();
           console.log(data);
           setInviteToken(invite);
+          setUrl("");
           navigate("/Register"); // Update with your actual route
         } else {
           let data = await response.json();

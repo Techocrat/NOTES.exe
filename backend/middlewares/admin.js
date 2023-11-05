@@ -50,24 +50,14 @@ export const listAllUsers = async (req, res) => {
         .json({ message: "You are not authorized view all users." });
     }
 
-    const page = parseInt(req.query.page) || 1; // Current page
-    const pageSize = parseInt(req.query.pageSize) || 10; // Number of users per page
-
-    // Calculate the starting index for users on the current page
-    const startIndex = (page - 1) * pageSize;
-
     // Fetch users with pagination
-    const users = await User.find({})
-      .skip(startIndex) // Skip users on previous pages
-      .limit(pageSize); // Limit the number of users on the current page
+    const users = await User.find({});
 
     // Count the total number of users in the database
     const totalUsers = await User.countDocuments();
-
+    console.log(users);
     return res.status(200).json({
       users,
-      currentPage: page,
-      totalPages: Math.ceil(totalUsers / pageSize),
     });
   } catch (error) {
     console.error(error);
@@ -87,6 +77,7 @@ export const viewUserNotes = async (req, res) => {
 
     // Get the user ID from the route parameter
     const { userId } = req.params;
+
 
     // Find the user by ID
     const user = await User.findById(userId);
@@ -168,7 +159,7 @@ export const promoteToAdmin = async (req, res) => {
     }
 
     // Update the user's role to admin
-    user.isAdmin = true;
+    user.isAdmin = !user.isAdmin;
 
     // Save the updated user
     await user.save();

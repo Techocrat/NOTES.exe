@@ -8,6 +8,11 @@ import Header from "./components/Header";
 import PrivateRoute from "./utils/PrivateRoute";
 import CreateNewNote from "./components/CreateNewNote";
 import LandingPage from "./components/LandingPage";
+import CreateInvite from "./components/CreateInvite";
+import ViewNotes from "./components/ViewAllUsers";
+import ViewUsers from "./components/ViewAllUsers";
+import AdminView from "./components/AdminView";
+
 function App() {
   return (
     <>
@@ -48,6 +53,33 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/CreateInvite"
+          element={
+            <PrivateRoute>
+              <CreateInvite />
+            </PrivateRoute>
+          }
+          
+        />
+
+         <Route
+          path="/ViewAllUsers"
+          element={
+            <PrivateRoute>
+              <ViewUsers />
+            </PrivateRoute>
+          }
+          />
+
+          <Route
+          path="/ViewUserNotes/:userId"
+          element={
+            <PrivateRoute>
+              <AdminView />
+            </PrivateRoute>
+          }
+          />
 
       </Routes>
     </>

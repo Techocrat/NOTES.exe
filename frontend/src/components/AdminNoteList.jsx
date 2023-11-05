@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 
-const MyNoteList = ({ notes, setNotes }) => {
+const AdminNoteList = ({ notes, setNotes }) => {
   const [editingNote, setEditingNote] = useState(null);
   const [editedNote, setEditedNote] = useState({ title: "", content: "" });
   const { token } = useContext(AuthContext);
@@ -10,7 +10,7 @@ const MyNoteList = ({ notes, setNotes }) => {
   const handleDelete = async (noteId) => {
     try {
       const res = await fetch(
-        `http://localhost:6001/users/delete-notes/${noteId}`,
+        `http://localhost:6001/admin/delete-note/${noteId}`,
         {
           method: "DELETE",
           headers: {
@@ -50,7 +50,7 @@ const MyNoteList = ({ notes, setNotes }) => {
   const handleSaveEdit = async (noteId) => {
     try {
       const res = await fetch(
-        `http://localhost:6001/users/update-notes/${noteId}`,
+        `http://localhost:6001/admin/update-note/${noteId}`,
         {
           method: "PUT",
           headers: {
@@ -162,4 +162,4 @@ const MyNoteList = ({ notes, setNotes }) => {
   );
 };
 
-export default MyNoteList;
+export default AdminNoteList;
