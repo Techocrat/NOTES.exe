@@ -9,15 +9,16 @@ import PrivateRoute from "./utils/PrivateRoute";
 import CreateNewNote from "./components/CreateNewNote";
 import LandingPage from "./components/LandingPage";
 import CreateInvite from "./components/CreateInvite";
-import ViewNotes from "./components/ViewAllUsers";
 import ViewUsers from "./components/ViewAllUsers";
 import AdminView from "./components/AdminView";
+import NotFound from "./components/404Page";
 
 function App() {
   return (
     <>
       <Header />
       <Routes>
+      <Route path="*" element={<NotFound/>} />
       <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -56,7 +57,7 @@ function App() {
         <Route
           path="/CreateInvite"
           element={
-            <PrivateRoute>
+            <PrivateRoute isAdmin={true}>
               <CreateInvite />
             </PrivateRoute>
           }
@@ -66,7 +67,7 @@ function App() {
          <Route
           path="/ViewAllUsers"
           element={
-            <PrivateRoute>
+            <PrivateRoute isAdmin={true}>
               <ViewUsers />
             </PrivateRoute>
           }
@@ -75,7 +76,7 @@ function App() {
           <Route
           path="/ViewUserNotes/:userId"
           element={
-            <PrivateRoute>
+            <PrivateRoute isAdmin={true}>
               <AdminView />
             </PrivateRoute>
           }

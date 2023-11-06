@@ -1,5 +1,6 @@
-import React, { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
@@ -15,7 +16,7 @@ const AuthContextProvider = (props) => {
   const [token, setToken] = useState("");
   const [inviteToken, setInviteToken] = useState("");
   const [loading, setLoading] = useState(false);
-
+  let location = useLocation();
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Please fill in both email and password fields.");
@@ -46,7 +47,7 @@ const AuthContextProvider = (props) => {
         setEmail("");
         setPassword("");
         setError("");
-
+        localStorage.setItem("token", token);
         navigate("/UserView"); // Update with your actual route
       } else {
         setError("Login failed. Please check your credentials.");
@@ -84,7 +85,6 @@ const AuthContextProvider = (props) => {
           }),
         });
         if (response.status === 200) {
-          
           let data = await response.json();
           console.log(data);
           setInviteToken(invite);
@@ -114,7 +114,39 @@ const AuthContextProvider = (props) => {
     setUser(null);
     setToken(null);
     navigate("/");
+    localStorage.removeItem("token");
   };
+
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+
+      setUser(decodedToken.user);
+      setToken(token);
+      const currentTime = Math.floor(Date.now() / 1000); // Convert milliseconds to seconds
+      const expirationTime = decodedToken.iat + 7 * 24 * 60 * 60;
+
+      if (expirationTime < currentTime) {
+        console.log("Token expired!");
+        handleLogout();
+      }
+
+      let currentUrl = location.pathname;
+
+      console.log(currentUrl);
+      if (
+        currentUrl === "/login" ||
+        currentUrl === "/register" ||
+        currentUrl === "/"
+      ) {
+        navigate("/UserView");
+      } else {
+        navigate(currentUrl);
+      }
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -135,7 +167,6 @@ const AuthContextProvider = (props) => {
         handleGo: handleGo,
         inviteToken: inviteToken,
         setInviteToken: setInviteToken,
-
       }}
     >
       {props.children}
