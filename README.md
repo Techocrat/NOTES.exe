@@ -41,4 +41,28 @@ Special thanks to the developers and communities of MongoDB, Express.js, React, 
 
 Feel free to customize and extend this project to meet your specific requirements. Enjoy using the User and Notes Management System!
 
+## Application UI overview
+### Account can only be created with an invitation link
+![Image Alt Text](./images/Screenshot%20(2).png)
+
+### Existing user/admin sign in page
+![Image Alt Text](./images/Screenshot%20(3).png)
+
+### Create note page
+![Image Alt Text](./images/Screenshot%20(4).png)
+
+### User viewing all his notes page
+![Image Alt Text](./images/Screenshot%20(5).png)
+
+### User seeing top 10 recent public notes
+![Image Alt Text](./images/Screenshot%20(6).png)
+
+### ADMIN generating invite link
+![Image Alt Text](./images/Screenshot%20(7).png)
+
+### Admin viewing all users/ promoting/ demoting users
+![Image Alt Text](./images/Screenshot%20(8).png)
+
+### Admin editing/ deleting any user's notes
+![Image Alt Text](./images/Screenshot%20(9).png)
 
